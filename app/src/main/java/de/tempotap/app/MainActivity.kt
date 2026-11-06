@@ -1,5 +1,6 @@
 package de.tempotap.app
 
+import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -16,9 +17,14 @@ import de.tempotap.app.ui.TempoTapApp
 import de.tempotap.app.ui.settings.SettingsViewModel
 import de.tempotap.app.ui.theme.TempoTapTheme
 import de.tempotap.app.ui.theme.resolveDarkTheme
+import de.tempotap.app.util.AppLocale
 import androidx.compose.ui.platform.LocalView
 
 class MainActivity : ComponentActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

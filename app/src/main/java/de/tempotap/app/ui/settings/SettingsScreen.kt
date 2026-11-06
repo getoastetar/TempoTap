@@ -1,5 +1,8 @@
 package de.tempotap.app.ui.settings
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -35,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -43,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.tempotap.app.BuildConfig
 import de.tempotap.app.R
+import de.tempotap.app.data.AppLanguage
 import de.tempotap.app.data.AppSettings
 import de.tempotap.app.data.ThemeMode
 import de.tempotap.app.ui.components.IconBadge
@@ -62,6 +67,7 @@ fun SettingsScreen(
 ) {
     val sessionCount by viewModel.sessionCount.collectAsStateWithLifecycle()
     var showClearDialog by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -94,6 +100,19 @@ fun SettingsScreen(
                         checked = settings.dynamicColor,
                         onCheckedChange = viewModel::setDynamicColor,
                         enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                    )
+                }
+            }
+
+            item { SectionTitle(stringResource(R.string.settings_language_section)) }
+            item {
+                SettingsCard {
+                    LanguageRow(
+                        selected = settings.language,
+                        onSelect = { language ->
+                            viewModel.setLanguage(language)
+                            context.findActivity()?.recreate()
+                        },
                     )
                 }
             }
@@ -207,6 +226,43 @@ fun SettingsScreen(
                 }
             },
         )
+    }
+}
+
+@Composable
+private fun LanguageRow(selected: AppLanguage, onSelect: (AppLanguage) -> Unit) {
+    Column(modifier = Modifier.padding(20.dp)) {
+        Text(
+            text = stringResource(R.string.settings_language),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = stringResource(R.string.settings_language_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AppLanguage.entries.forEach { language ->
+                FilterChip(
+                    selected = selected == language,
+                    onClick = {
+                        if (selected != language) onSelect(language)
+                    },
+                    label = {
+                        Text(
+                            stringResource(
+                                when (language) {
+                                    AppLanguage.GERMAN -> R.string.settings_language_german
+                                    AppLanguage.ENGLISH -> R.string.settings_language_english
+                                },
+                            ),
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -369,4 +425,10 @@ private fun AboutRow(version: String, onClick: () -> Unit) {
             modifier = Modifier.size(22.dp),
         )
     }
+}
+
+private fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

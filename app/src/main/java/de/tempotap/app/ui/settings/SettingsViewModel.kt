@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import de.tempotap.app.TempoTapApplication
+import de.tempotap.app.data.AppLanguage
 import de.tempotap.app.data.AppSettings
 import de.tempotap.app.data.ThemeMode
+import de.tempotap.app.util.AppLocale
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -21,7 +23,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = AppSettings(),
+            initialValue = AppSettings(language = AppLocale.read(application)),
         )
 
     val sessionCount: StateFlow<Int> = container.sessionRepository.sessions
@@ -47,6 +49,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setAccentFirstBeat(enabled: Boolean) = update { repository.setAccentFirstBeat(enabled) }
 
     fun setDefaultBeatsPerBar(beats: Int) = update { repository.setDefaultBeatsPerBar(beats) }
+
+    fun setLanguage(language: AppLanguage) = repository.setLanguage(language)
 
     fun clearHistory() {
         viewModelScope.launch { container.sessionRepository.clear() }

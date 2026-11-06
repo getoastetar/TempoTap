@@ -10,35 +10,41 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import de.tempotap.app.util.AppLocale
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class SettingsRepository(context: Context) {
 
-    private val dataStore = context.applicationContext.settingsDataStore
+    private val appContext = context.applicationContext
+    private val dataStore = appContext.settingsDataStore
+    private val languageFlow = MutableStateFlow(AppLocale.read(appContext))
 
-    val settings: Flow<AppSettings> = dataStore.data
-        .catch { error ->
+    val settings: Flow<AppSettings> = combine(
+        dataStore.data.catch { error ->
             if (error is IOException) emit(emptyPreferences()) else throw error
-        }
-        .map { prefs ->
-            AppSettings(
-                themeMode = prefs[Keys.THEME]?.let { value ->
-                    runCatching { ThemeMode.valueOf(value) }.getOrNull()
-                } ?: ThemeMode.SYSTEM,
-                dynamicColor = prefs[Keys.DYNAMIC_COLOR] ?: true,
-                haptics = prefs[Keys.HAPTICS] ?: true,
-                tapSound = prefs[Keys.TAP_SOUND] ?: false,
-                keepScreenOn = prefs[Keys.KEEP_SCREEN_ON] ?: false,
-                resetTimeoutMs = prefs[Keys.RESET_TIMEOUT] ?: 2_500L,
-                accentFirstBeat = prefs[Keys.ACCENT] ?: true,
-                defaultBeatsPerBar = prefs[Keys.BEATS_PER_BAR] ?: 4,
-            )
-        }
+        },
+        languageFlow,
+    ) { prefs, language ->
+        AppSettings(
+            themeMode = prefs[Keys.THEME]?.let { value ->
+                runCatching { ThemeMode.valueOf(value) }.getOrNull()
+            } ?: ThemeMode.SYSTEM,
+            dynamicColor = prefs[Keys.DYNAMIC_COLOR] ?: true,
+            haptics = prefs[Keys.HAPTICS] ?: true,
+            tapSound = prefs[Keys.TAP_SOUND] ?: false,
+            keepScreenOn = prefs[Keys.KEEP_SCREEN_ON] ?: false,
+            resetTimeoutMs = prefs[Keys.RESET_TIMEOUT] ?: 2_500L,
+            accentFirstBeat = prefs[Keys.ACCENT] ?: true,
+            defaultBeatsPerBar = prefs[Keys.BEATS_PER_BAR] ?: 4,
+            language = language,
+        )
+    }
 
     suspend fun setThemeMode(mode: ThemeMode) = edit { it[Keys.THEME] = mode.name }
 
@@ -55,6 +61,11 @@ class SettingsRepository(context: Context) {
     suspend fun setAccentFirstBeat(enabled: Boolean) = edit { it[Keys.ACCENT] = enabled }
 
     suspend fun setDefaultBeatsPerBar(beats: Int) = edit { it[Keys.BEATS_PER_BAR] = beats }
+
+    fun setLanguage(language: AppLanguage) {
+        AppLocale.write(appContext, language)
+        languageFlow.value = language
+    }
 
     private suspend fun edit(block: (androidx.datastore.preferences.core.MutablePreferences) -> Unit) {
         dataStore.edit(block)

@@ -1,5 +1,6 @@
 package de.tempotap.app.data
 
+import java.util.Locale
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,6 +18,19 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class AppLanguage(val languageTag: String) {
+    GERMAN("de"),
+    ENGLISH("en");
+
+    companion object {
+        fun fromTag(tag: String?): AppLanguage? =
+            entries.firstOrNull { it.languageTag == tag }
+
+        fun systemDefault(): AppLanguage =
+            if (Locale.getDefault().language == "de") GERMAN else ENGLISH
+    }
+}
+
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val dynamicColor: Boolean = true,
@@ -26,4 +40,5 @@ data class AppSettings(
     val resetTimeoutMs: Long = 2_500L,
     val accentFirstBeat: Boolean = true,
     val defaultBeatsPerBar: Int = 4,
+    val language: AppLanguage = AppLanguage.systemDefault(),
 )

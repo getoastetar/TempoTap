@@ -109,6 +109,11 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_dynamic">Material You</string>
     <string name="settings_dynamic_desc">Use colors from your wallpaper (Android 12+)</string>
+    <string name="settings_language_section">Language</string>
+    <string name="settings_language">App language</string>
+    <string name="settings_language_desc">Applies immediately across the whole app.</string>
+    <string name="settings_language_german">Deutsch</string>
+    <string name="settings_language_english">English</string>
     <string name="settings_behavior">Behavior</string>
     <string name="settings_haptics">Haptic feedback</string>
     <string name="settings_haptics_desc">A short vibration on every tap</string>
