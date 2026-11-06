@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TempoTap</string>
+
+    <!-- Navigation -->
+    <string name="nav_tempo">Tempo</string>
+    <string name="nav_metronome">Metronome</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Common -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_open">Open</string>
+    <string name="value_none">–</string>
+    <string name="value_ms">%1$d ms</string>
+    <string name="value_variation">±%1$s %%</string>
+    <string name="session_saved">Session saved</string>
+
+    <!-- Tempo -->
+    <string name="tempo_eyebrow">TEMPO</string>
+    <string name="tempo_title">Tap the beat</string>
+    <string name="tempo_subtitle">Tap along to the rhythm. TempoTap measures the gaps between your taps.</string>
+    <string name="bpm_unit">BPM</string>
+    <string name="tempo_idle_hint">Tap at least twice</string>
+    <string name="tempo_continue_hint">Keep tapping for a steadier result</string>
+    <string name="tempo_stable_hint">Tempo detected</string>
+    <string name="tempo_tap_hint">Tap here to the rhythm</string>
+    <string name="tempo_stat_interval">Interval</string>
+    <string name="tempo_stat_taps">Taps</string>
+    <string name="tempo_stat_variation">Spread</string>
+    <string name="tempo_stability_none">Waiting for taps</string>
+    <string name="tempo_stability_low">Still uneven</string>
+    <string name="tempo_stability_medium">Steady</string>
+    <string name="tempo_stability_high">Very steady</string>
+    <string name="tempo_new_measurement">New measurement</string>
+    <string name="tempo_metronome_title">Metronome</string>
+    <string name="tempo_metronome_with_bpm">Practice at %1$d BPM</string>
+    <string name="tempo_metronome_running">Running at %1$d BPM</string>
+    <string name="tempo_metronome_idle">Ready for your tempo</string>
+    <string name="tempo_metronome_action">Start</string>
+    <string name="tempo_tips_title">How it works</string>
+    <string name="tempo_tip_1">Tap at least three times in a steady rhythm.</string>
+    <string name="tempo_tip_2">The longer you tap, the more accurate the average becomes.</string>
+    <string name="tempo_tip_3">After a pause, a new measurement starts automatically.</string>
+    <string name="a11y_tap_pad">Tempo tap area. Tap along to the rhythm.</string>
+    <string name="a11y_bpm">%1$d beats per minute</string>
+
+    <plurals name="tap_count">
+        <item quantity="one">%d tap</item>
+        <item quantity="other">%d taps</item>
+    </plurals>
+
+    <!-- Metronome -->
+    <string name="metronome_eyebrow">METRONOME</string>
+    <string name="metronome_title">Stay on the beat</string>
+    <string name="metronome_subtitle">Sample-accurate click with an accent on the first beat.</string>
+    <string name="metronome_start">Start</string>
+    <string name="metronome_stop">Stop</string>
+    <string name="metronome_tempo">Tempo</string>
+    <string name="metronome_bpm_format">%1$d BPM</string>
+    <string name="metronome_decrease">Decrease tempo</string>
+    <string name="metronome_increase">Increase tempo</string>
+    <string name="metronome_presets">Quick pick</string>
+    <string name="metronome_beats">Beats per bar</string>
+    <string name="metronome_auto_stop">Auto stop</string>
+    <string name="metronome_auto_stop_off">Off</string>
+    <string name="metronome_minutes">%1$d min</string>
+    <string name="metronome_time_left">%1$d:%2$02d left</string>
+    <string name="metronome_tap_hint">Tip: tap your tempo on the Tempo screen and send it straight to the metronome.</string>
+    <string name="metronome_beat_indicator">Beat %1$d of %2$d</string>
+    <string name="a11y_metronome_toggle">Metronome %1$s</string>
+
+    <!-- History -->
+    <string name="history_eyebrow">HISTORY</string>
+    <string name="history_title">Your tempos</string>
+    <string name="history_subtitle">Stored locally. On this device only.</string>
+    <string name="history_sessions">Sessions</string>
+    <string name="history_average">Avg. tempo</string>
+    <string name="history_fastest">Fastest</string>
+    <string name="history_chart_title">Tempo trend</string>
+    <string name="history_chart_desc">Line chart of your most recently saved tempos.</string>
+    <string name="history_empty_title">No sessions yet</string>
+    <string name="history_empty_body">Tap a few beats on the Tempo screen. Your session is saved automatically.</string>
+    <string name="history_empty_action">Go to tempo</string>
+    <string name="history_clear">Delete all</string>
+    <string name="history_clear_title">Delete history?</string>
+    <string name="history_clear_body">All saved sessions will be permanently removed.</string>
+    <string name="history_delete_session">Delete session</string>
+    <string name="history_bpm_value">%1$d BPM</string>
+    <string name="history_duration">%1$d:%2$02d</string>
+    <string name="history_list_title">Sessions</string>
+
+    <plurals name="session_count">
+        <item quantity="one">%d session</item>
+        <item quantity="other">%d sessions</item>
+    </plurals>
+
+    <!-- Settings -->
+    <string name="settings_eyebrow">SETTINGS</string>
+    <string name="settings_title">Make it yours</string>
+    <string name="settings_subtitle">Appearance, behavior and data.</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic">Material You</string>
+    <string name="settings_dynamic_desc">Use colors from your wallpaper (Android 12+)</string>
+    <string name="settings_behavior">Behavior</string>
+    <string name="settings_haptics">Haptic feedback</string>
+    <string name="settings_haptics_desc">A short vibration on every tap</string>
+    <string name="settings_tap_sound">Tap sound</string>
+    <string name="settings_tap_sound_desc">A quiet click while tapping</string>
+    <string name="settings_keep_awake">Keep screen awake</string>
+    <string name="settings_keep_awake_desc">Handy when practicing with the metronome</string>
+    <string name="settings_reset_timeout">Pause before a new measurement</string>
+    <string name="settings_reset_timeout_value">%1$s s</string>
+    <string name="settings_metronome">Metronome</string>
+    <string name="settings_accent">Accent on the first beat</string>
+    <string name="settings_accent_desc">The first beat of a bar sounds higher</string>
+    <string name="settings_default_beats">Default time signature</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_history">History</string>
+    <string name="settings_history_desc">%1$s on this device</string>
+    <string name="settings_clear_history">Delete history</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_title">About TempoTap</string>
+    <string name="settings_version">Version %1$s</string>
+
+    <!-- About -->
+    <string name="about_title">About TempoTap</string>
+    <string name="about_lead">A fast, precise BPM tapper for musicians, DJs, dancers and anyone who wants to measure a pulse.</string>
+    <string name="about_features_title">Features</string>
+    <string name="about_feature_1">Tap tempo with outlier filtering and a stability indicator</string>
+    <string name="about_feature_2">Metronome with sample-accurate clicks and accents</string>
+    <string name="about_feature_3">Local history with statistics and a chart</string>
+    <string name="about_feature_4">Material You, dark mode and adaptive layouts</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_privacy_body">All measurements and settings stay on your device. Nothing is uploaded and no account is required.</string>
+    <string name="about_credits">Inspired by the idea behind beatsperminuteonline.com. No content or trademarks from that website are used.</string>
+    <string name="about_made_with">Built with Kotlin, Jetpack Compose and Material 3.</string>
+</resources>
