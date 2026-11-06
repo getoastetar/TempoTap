@@ -5,7 +5,7 @@ Eine moderne Android-App zum Messen von **BPM (Beats per Minute)** per Tap – i
 ## Funktionen
 
 - **Tap-Tempo** mit großer Tippfläche, Ausreißer-Filter, Streuungsanzeige und Stabilitäts-Feedback
-- **Präzises Metronom** mit sample-genauem Klick, Akzent auf der Eins, Takten 2/3/4/6 und drei synthetischen Klängen (klassisch, analog, digital)
+- **Präzises Metronom** mit sample-genauem Klick, Akzent auf der Eins im 4/4-Takt, Schnellwahl für gängige Tempi und drei synthetischen Klängen (klassisch, analog, digital)
 - **Verlauf** mit automatisch gespeicherten Sessions, Statistik und Liniendiagramm
 - **Material You** (dynamische Farben ab Android 12) inklusive Fallback-Palette, Dark Mode, optionalem AMOLED-Schwarz und edge-to-edge Layout
 - **Adaptive Oberfläche** für Smartphones, Tablets und Foldables (Bottom-Navigation bzw. Navigation Rail, zweispaltige Tap-Ansicht)
@@ -53,10 +53,10 @@ Voraussetzung: JDK 17+ und Android SDK 36 (`platforms;android-36`, `build-tools;
 
 ### Fertige APK
 
-Im Projektordner liegt zusätzlich `TempoTap-1.2.0-debug.apk` (Debug-Signatur, direkt installierbar). Die Datei kann per Dateimanager auf dem Gerät geöffnet oder über ADB installiert werden:
+Im Projektordner liegt zusätzlich `TempoTap-1.3.0-debug.apk` (Debug-Signatur, direkt installierbar). Die Datei kann per Dateimanager auf dem Gerät geöffnet oder über ADB installiert werden:
 
 ```bash
-adb install TempoTap-1.2.0-debug.apk
+adb install TempoTap-1.3.0-debug.apk
 ```
 
 Für eine Weitergabe an andere Geräte sollte ein eigener Release-Key verwendet werden; die Debug-APK ist dafür nicht gedacht.

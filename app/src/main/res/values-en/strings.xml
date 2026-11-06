@@ -18,7 +18,6 @@
     <string name="value_ms">%1$d ms</string>
     <string name="value_seconds">%1$s s</string>
     <string name="value_variation">±%1$s %%</string>
-    <string name="session_saved">Session saved</string>
 
     <!-- Tempo -->
     <string name="bpm_unit">BPM</string>
@@ -117,9 +116,6 @@
     <string name="settings_sound_classic">Classic</string>
     <string name="settings_sound_analog">Analog</string>
     <string name="settings_sound_digital">Digital</string>
-    <string name="settings_accent">Accent on the first beat</string>
-    <string name="settings_accent_desc">The first beat of a bar sounds higher</string>
-    <string name="settings_default_beats">Default time signature</string>
     <string name="settings_data">Data</string>
     <string name="settings_history">History</string>
     <string name="settings_history_desc">%1$s on this device</string>

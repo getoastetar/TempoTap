@@ -35,14 +35,7 @@ class MetronomeController {
     private var tickerJob: Job? = null
 
     @Volatile
-    private var accentFirstBeat = true
-
-    @Volatile
     private var sound = MetronomeSound.CLASSIC
-
-    fun setAccentFirstBeat(enabled: Boolean) {
-        accentFirstBeat = enabled
-    }
 
     fun setSound(sound: MetronomeSound) {
         if (this.sound == sound) return
@@ -59,13 +52,6 @@ class MetronomeController {
 
     fun adjustBpm(delta: Int) = setBpm(_state.value.bpm + delta)
 
-    fun setBeatsPerBar(beats: Int) {
-        val clamped = beats.coerceIn(1, 12)
-        if (clamped == _state.value.beatsPerBar) return
-        _state.update { it.copy(beatsPerBar = clamped) }
-        if (_state.value.isPlaying) restart()
-    }
-
     fun toggle() {
         if (_state.value.isPlaying) stop() else start()
     }
@@ -73,7 +59,7 @@ class MetronomeController {
     fun start() {
         val snapshot = _state.value
         if (snapshot.isPlaying) return
-        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat, sound)
+        engine.start(snapshot.bpm, BEATS_PER_BAR, accentFirstBeat = true, sound = sound)
         _state.update { it.copy(isPlaying = true, currentBeat = 0) }
         startTicker()
     }
@@ -88,7 +74,7 @@ class MetronomeController {
     private fun restart() {
         val snapshot = _state.value
         engine.stop()
-        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat, sound)
+        engine.start(snapshot.bpm, BEATS_PER_BAR, accentFirstBeat = true, sound = sound)
         _state.update { it.copy(currentBeat = 0) }
         startTicker()
     }
@@ -100,9 +86,8 @@ class MetronomeController {
             var nextBeat = SystemClock.elapsedRealtimeNanos()
             while (isActive && _state.value.isPlaying) {
                 val bpm = _state.value.bpm
-                val beatsPerBar = _state.value.beatsPerBar
-                _state.update { it.copy(currentBeat = beat.coerceAtMost(beatsPerBar - 1)) }
-                beat = (beat + 1) % beatsPerBar
+                _state.update { it.copy(currentBeat = beat.coerceAtMost(BEATS_PER_BAR - 1)) }
+                beat = (beat + 1) % BEATS_PER_BAR
                 nextBeat += (60_000_000_000.0 / bpm).toLong()
                 val delayMs = (nextBeat - SystemClock.elapsedRealtimeNanos()) / 1_000_000L
                 if (delayMs > 0) delay(delayMs) else Thread.yield()
@@ -113,5 +98,6 @@ class MetronomeController {
     companion object {
         const val MIN_BPM = 30
         const val MAX_BPM = 300
+        const val BEATS_PER_BAR = 4
     }
 }

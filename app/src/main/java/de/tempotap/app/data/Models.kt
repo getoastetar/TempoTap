@@ -44,8 +44,6 @@ data class AppSettings(
     val haptics: Boolean = true,
     val keepScreenOn: Boolean = false,
     val resetTimeoutMs: Long = 2_500L,
-    val accentFirstBeat: Boolean = true,
-    val defaultBeatsPerBar: Int = 4,
     val metronomeSound: MetronomeSound = MetronomeSound.CLASSIC,
     val language: AppLanguage = AppLanguage.systemDefault(),
 )

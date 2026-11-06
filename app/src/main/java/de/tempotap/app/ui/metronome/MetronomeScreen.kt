@@ -124,13 +124,13 @@ fun MetronomeScreen(
                 }
             }
             item {
-                HintCard(onOpenTempo = onOpenTempo)
-            }
-            item {
                 PresetRow(
                     currentBpm = state.bpm,
                     onSelect = viewModel::setBpm,
                 )
+            }
+            item {
+                HintCard(onOpenTempo = onOpenTempo)
             }
             item { Spacer(Modifier.height(8.dp)) }
         }
@@ -153,6 +153,7 @@ private fun TempoPanel(
     val displayedBpm = if (dragging) sliderValue.roundToInt() else state.bpm
 
     Surface(
+        modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
@@ -294,14 +295,14 @@ private fun BeatDots(state: MetronomeState) {
 
 @Composable
 private fun PresetRow(currentBpm: Int, onSelect: (Int) -> Unit) {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(stringResource(R.string.metronome_presets))
         Spacer(Modifier.height(10.dp))
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            listOf(60, 90, 120, 140, 180).forEach { preset ->
+            listOf(60, 90, 120, 140, 175).forEach { preset ->
                 FilterChip(
                     selected = currentBpm == preset,
                     onClick = { onSelect(preset) },
@@ -315,6 +316,7 @@ private fun PresetRow(currentBpm: Int, onSelect: (Int) -> Unit) {
 @Composable
 private fun HintCard(onOpenTempo: () -> Unit) {
     Surface(
+        modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {

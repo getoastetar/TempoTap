@@ -1,11 +1,6 @@
 package de.tempotap.app.ui.tempo
 
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -47,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
@@ -104,8 +98,7 @@ fun TempoScreen(
             ),
     ) {
         val wide = maxWidth >= 780.dp && maxHeight >= 520.dp
-        val savedHintHeight = if (state.saved) 40.dp else 0.dp
-        val compactTapHeight = (maxHeight - 220.dp - savedHintHeight).coerceAtLeast(260.dp)
+        val compactTapHeight = (maxHeight - 220.dp).coerceAtLeast(260.dp)
         if (wide) {
             Row(
                 modifier = Modifier
@@ -128,9 +121,6 @@ fun TempoScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     StatsRow(state)
-                    if (state.saved) {
-                        SavedHint(saved = true)
-                    }
                     MetronomeCard(
                         state = state,
                         metronomeState = metronomeState,
@@ -155,9 +145,6 @@ fun TempoScreen(
                     modifier = Modifier.fillMaxWidth().height(compactTapHeight),
                 )
                 StatsRow(state)
-                if (state.saved) {
-                    SavedHint(saved = true)
-                }
                 MetronomeCard(
                     state = state,
                     metronomeState = metronomeState,
@@ -181,6 +168,10 @@ private fun TapHero(
     val shape = MaterialTheme.shapes.extraLarge
     val bpmValue = state.bpm?.roundToInt()?.coerceAtLeast(0) ?: 0
     val currentOnTap by rememberUpdatedState(onTap)
+    val sessionEnded = state.saved
+    val blockStart = if (sessionEnded) Color(0xFF737373) else colors.primary
+    val blockEnd = if (sessionEnded) Color(0xFF4A4A4A) else colors.tertiary
+    val contentColor = if (sessionEnded) Color.White else colors.onPrimary
 
     val ripple = remember { androidx.compose.animation.core.Animatable(1f) }
     val scope = rememberCoroutineScope()
@@ -219,7 +210,7 @@ private fun TapHero(
             .clip(shape)
             .background(
                 Brush.linearGradient(
-                    colors = listOf(colors.primary, colors.tertiary),
+                    colors = listOf(blockStart, blockEnd),
                 ),
             )
             .pointerInput(Unit) {
@@ -261,7 +252,7 @@ private fun TapHero(
             if (hasRipple && ripple.value < 1f) {
                 val progress = ripple.value
                 drawCircle(
-                    color = colors.onPrimary.copy(alpha = (1f - progress) * 0.20f),
+                    color = contentColor.copy(alpha = (1f - progress) * 0.20f),
                     radius = size.minDimension * 0.14f + progress * size.maxDimension * 0.72f,
                     center = rippleCenter,
                 )
@@ -284,7 +275,7 @@ private fun TapHero(
                         .size(8.dp)
                         .clip(CircleShape)
                         .background(
-                            colors.onPrimary.copy(
+                            contentColor.copy(
                                 alpha = if (state.stability == Stability.NONE) 0.35f else 1f,
                             ),
                         ),
@@ -292,7 +283,7 @@ private fun TapHero(
                 Text(
                     text = stringResource(R.string.bpm_unit),
                     style = MaterialTheme.typography.labelSmall,
-                    color = colors.onPrimary.copy(alpha = 0.85f),
+                    color = contentColor.copy(alpha = 0.85f),
                 )
             }
             Text(
@@ -303,25 +294,25 @@ private fun TapHero(
                     letterSpacing = (-4).sp,
                     fontFeatureSettings = "tnum",
                 ),
-                color = colors.onPrimary,
+                color = contentColor,
             )
             Text(
                 text = statusText,
                 style = MaterialTheme.typography.titleMedium,
-                color = colors.onPrimary.copy(alpha = 0.9f),
+                color = contentColor.copy(alpha = 0.9f),
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(10.dp))
             Text(
                 text = stabilityLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = colors.onPrimary.copy(alpha = 0.7f),
+                color = contentColor.copy(alpha = 0.7f),
             )
             Spacer(Modifier.height(20.dp))
             Surface(
                 shape = CircleShape,
-                color = colors.onPrimary.copy(alpha = 0.14f),
-                contentColor = colors.onPrimary,
+                color = contentColor.copy(alpha = 0.14f),
+                contentColor = contentColor,
                 modifier = Modifier.size(64.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -374,34 +365,6 @@ private fun StatsRow(state: TempoUiState) {
             value = variation,
             modifier = Modifier.weight(1f).fillMaxHeight(),
         )
-    }
-}
-
-@Composable
-private fun SavedHint(saved: Boolean) {
-    AnimatedVisibility(
-        visible = saved,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically(),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier.size(18.dp),
-            )
-            Spacer(Modifier.width(6.dp))
-            Text(
-                text = stringResource(R.string.session_saved),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
     }
 }
 

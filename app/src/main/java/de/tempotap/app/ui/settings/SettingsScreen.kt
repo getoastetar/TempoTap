@@ -156,18 +156,6 @@ fun SettingsScreen(
                         selected = settings.metronomeSound,
                         onSelect = viewModel::setMetronomeSound,
                     )
-                    SettingsDivider()
-                    SettingsSwitchRow(
-                        title = stringResource(R.string.settings_accent),
-                        description = stringResource(R.string.settings_accent_desc),
-                        checked = settings.accentFirstBeat,
-                        onCheckedChange = viewModel::setAccentFirstBeat,
-                    )
-                    SettingsDivider()
-                    BeatsRow(
-                        selected = settings.defaultBeatsPerBar,
-                        onSelect = viewModel::setDefaultBeatsPerBar,
-                    )
                 }
             }
 
@@ -374,27 +362,6 @@ private fun TimeoutRow(millis: Long, onChange: (Long) -> Unit) {
             valueRange = 1f..5f,
             steps = 7,
         )
-    }
-}
-
-@Composable
-private fun BeatsRow(selected: Int, onSelect: (Int) -> Unit) {
-    Column(modifier = Modifier.padding(20.dp)) {
-        Text(
-            text = stringResource(R.string.settings_default_beats),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(Modifier.height(10.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf(2, 3, 4, 6).forEach { beats ->
-                FilterChip(
-                    selected = selected == beats,
-                    onClick = { onSelect(beats) },
-                    label = { Text(beats.toString()) },
-                )
-            }
-        }
     }
 }
 

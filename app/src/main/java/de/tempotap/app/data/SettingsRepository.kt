@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -40,8 +39,6 @@ class SettingsRepository(context: Context) {
             haptics = prefs[Keys.HAPTICS] ?: true,
             keepScreenOn = prefs[Keys.KEEP_SCREEN_ON] ?: false,
             resetTimeoutMs = prefs[Keys.RESET_TIMEOUT] ?: 2_500L,
-            accentFirstBeat = prefs[Keys.ACCENT] ?: true,
-            defaultBeatsPerBar = prefs[Keys.BEATS_PER_BAR] ?: 4,
             metronomeSound = prefs[Keys.METRONOME_SOUND]?.let { value ->
                 runCatching { MetronomeSound.valueOf(value) }.getOrNull()
             } ?: MetronomeSound.CLASSIC,
@@ -61,10 +58,6 @@ class SettingsRepository(context: Context) {
 
     suspend fun setResetTimeout(millis: Long) = edit { it[Keys.RESET_TIMEOUT] = millis }
 
-    suspend fun setAccentFirstBeat(enabled: Boolean) = edit { it[Keys.ACCENT] = enabled }
-
-    suspend fun setDefaultBeatsPerBar(beats: Int) = edit { it[Keys.BEATS_PER_BAR] = beats }
-
     suspend fun setMetronomeSound(sound: MetronomeSound) = edit { it[Keys.METRONOME_SOUND] = sound.name }
 
     fun setLanguage(language: AppLanguage) {
@@ -83,8 +76,6 @@ class SettingsRepository(context: Context) {
         val HAPTICS = booleanPreferencesKey("haptics")
         val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
         val RESET_TIMEOUT = longPreferencesKey("reset_timeout")
-        val ACCENT = booleanPreferencesKey("accent_first_beat")
-        val BEATS_PER_BAR = intPreferencesKey("beats_per_bar")
         val METRONOME_SOUND = stringPreferencesKey("metronome_sound")
     }
 }

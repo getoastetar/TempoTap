@@ -18,7 +18,6 @@
     <string name="value_ms">%1$d ms</string>
     <string name="value_seconds">%1$s s</string>
     <string name="value_variation">±%1$s %%</string>
-    <string name="session_saved">Session gespeichert</string>
 
     <!-- Tempo -->
     <string name="bpm_unit">BPM</string>
@@ -117,9 +116,6 @@
     <string name="settings_sound_classic">Klassisch</string>
     <string name="settings_sound_analog">Analog</string>
     <string name="settings_sound_digital">Digital</string>
-    <string name="settings_accent">Akzent auf der Eins</string>
-    <string name="settings_accent_desc">Der erste Schlag eines Takts klingt höher</string>
-    <string name="settings_default_beats">Standard-Takt</string>
     <string name="settings_data">Daten</string>
     <string name="settings_history">Verlauf</string>
     <string name="settings_history_desc">%1$s auf diesem Gerät</string>

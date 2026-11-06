@@ -15,19 +15,10 @@ class MetronomeViewModel(application: Application) : AndroidViewModel(applicatio
 
     val state: StateFlow<MetronomeState> = controller.state
 
-    private var lastDefaultBeats = -1
-
     init {
         viewModelScope.launch {
             container.settingsRepository.settings.collect { settings ->
-                controller.setAccentFirstBeat(settings.accentFirstBeat)
                 controller.setSound(settings.metronomeSound)
-                if (settings.defaultBeatsPerBar != lastDefaultBeats) {
-                    lastDefaultBeats = settings.defaultBeatsPerBar
-                    if (!controller.state.value.isPlaying) {
-                        controller.setBeatsPerBar(settings.defaultBeatsPerBar)
-                    }
-                }
             }
         }
     }

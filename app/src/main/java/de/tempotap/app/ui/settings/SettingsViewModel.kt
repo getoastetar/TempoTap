@@ -47,10 +47,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun setResetTimeout(millis: Long) = update { repository.setResetTimeout(millis) }
 
-    fun setAccentFirstBeat(enabled: Boolean) = update { repository.setAccentFirstBeat(enabled) }
-
-    fun setDefaultBeatsPerBar(beats: Int) = update { repository.setDefaultBeatsPerBar(beats) }
-
     fun setMetronomeSound(sound: MetronomeSound) = update { repository.setMetronomeSound(sound) }
 
     fun setLanguage(language: AppLanguage) = repository.setLanguage(language)
