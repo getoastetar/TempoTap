@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import de.tempotap.app.TempoTapApplication
 import de.tempotap.app.data.AppLanguage
 import de.tempotap.app.data.AppSettings
+import de.tempotap.app.data.MetronomeSound
 import de.tempotap.app.data.ThemeMode
 import de.tempotap.app.util.AppLocale
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,9 +39,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun setDynamicColor(enabled: Boolean) = update { repository.setDynamicColor(enabled) }
 
-    fun setHaptics(enabled: Boolean) = update { repository.setHaptics(enabled) }
+    fun setAmoledMode(enabled: Boolean) = update { repository.setAmoledMode(enabled) }
 
-    fun setTapSound(enabled: Boolean) = update { repository.setTapSound(enabled) }
+    fun setHaptics(enabled: Boolean) = update { repository.setHaptics(enabled) }
 
     fun setKeepScreenOn(enabled: Boolean) = update { repository.setKeepScreenOn(enabled) }
 
@@ -49,6 +50,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setAccentFirstBeat(enabled: Boolean) = update { repository.setAccentFirstBeat(enabled) }
 
     fun setDefaultBeatsPerBar(beats: Int) = update { repository.setDefaultBeatsPerBar(beats) }
+
+    fun setMetronomeSound(sound: MetronomeSound) = update { repository.setMetronomeSound(sound) }
 
     fun setLanguage(language: AppLanguage) = repository.setLanguage(language)
 

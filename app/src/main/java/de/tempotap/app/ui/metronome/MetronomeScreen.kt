@@ -2,7 +2,7 @@ package de.tempotap.app.ui.metronome
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -42,11 +42,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,9 +56,7 @@ import de.tempotap.app.R
 import de.tempotap.app.audio.MetronomeController
 import de.tempotap.app.audio.MetronomeState
 import de.tempotap.app.data.AppSettings
-import de.tempotap.app.ui.components.ScreenHeader
 import de.tempotap.app.ui.components.SectionTitle
-import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
@@ -83,13 +83,6 @@ fun MetronomeScreen(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            item {
-                ScreenHeader(
-                    eyebrow = stringResource(R.string.metronome_eyebrow),
-                    title = stringResource(R.string.metronome_title),
-                    subtitle = stringResource(R.string.metronome_subtitle),
-                )
-            }
             item {
                 TempoPanel(
                     state = state,
@@ -131,25 +124,13 @@ fun MetronomeScreen(
                 }
             }
             item {
+                HintCard(onOpenTempo = onOpenTempo)
+            }
+            item {
                 PresetRow(
                     currentBpm = state.bpm,
                     onSelect = viewModel::setBpm,
                 )
-            }
-            item {
-                BeatsPerBarCard(
-                    beatsPerBar = state.beatsPerBar,
-                    onSelect = viewModel::setBeatsPerBar,
-                )
-            }
-            item {
-                AutoStopCard(
-                    state = state,
-                    onSelect = viewModel::setAutoStop,
-                )
-            }
-            item {
-                HintCard(onOpenTempo = onOpenTempo)
             }
             item { Spacer(Modifier.height(8.dp)) }
         }
@@ -201,9 +182,9 @@ private fun TempoPanel(
                 )
             }
 
-            Spacer(Modifier.height(14.dp))
-            BeatDots(state)
             Spacer(Modifier.height(18.dp))
+            BeatDots(state)
+            Spacer(Modifier.height(22.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 FilledTonalIconButton(
@@ -250,6 +231,9 @@ private fun BeatDots(state: MetronomeState) {
     val activeColor = MaterialTheme.colorScheme.primary
     val accentColor = MaterialTheme.colorScheme.tertiary
     val inactiveColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val activeContent = MaterialTheme.colorScheme.onPrimary
+    val accentContent = MaterialTheme.colorScheme.onTertiary
+    val inactiveContent = MaterialTheme.colorScheme.onSurfaceVariant
     val beatLabel = stringResource(
         R.string.metronome_beat_indicator,
         (state.currentBeat + 1).coerceAtLeast(0),
@@ -260,28 +244,50 @@ private fun BeatDots(state: MetronomeState) {
         modifier = Modifier
             .fillMaxWidth()
             .semantics { contentDescription = beatLabel },
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(state.beatsPerBar) { index ->
             val active = state.isPlaying && state.currentBeat == index
+            val accent = index == 0
             val color by animateColorAsState(
                 targetValue = when {
-                    active && index == 0 -> accentColor
+                    active && accent -> accentColor
                     active -> activeColor
                     else -> inactiveColor
                 },
                 label = "beatColor",
             )
-            val dotSize by animateDpAsState(
-                targetValue = if (active) 18.dp else 12.dp,
-                label = "beatSize",
+            val contentColor by animateColorAsState(
+                targetValue = when {
+                    active && accent -> accentContent
+                    active -> activeContent
+                    else -> inactiveContent
+                },
+                label = "beatContentColor",
+            )
+            val scale by animateFloatAsState(
+                targetValue = if (active) 1.05f else 1f,
+                label = "beatScale",
             )
             Box(
                 modifier = Modifier
-                    .size(dotSize)
-                    .clip(CircleShape)
+                    .weight(1f)
+                    .height(56.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                    .clip(RoundedCornerShape(18.dp))
                     .background(color),
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = (index + 1).toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
+                    color = contentColor,
+                )
+            }
         }
     }
 }
@@ -301,81 +307,6 @@ private fun PresetRow(currentBpm: Int, onSelect: (Int) -> Unit) {
                     onClick = { onSelect(preset) },
                     label = { Text(preset.toString()) },
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun BeatsPerBarCard(beatsPerBar: Int, onSelect: (Int) -> Unit) {
-    Surface(
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Text(
-                text = stringResource(R.string.metronome_beats),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(2, 3, 4, 6).forEach { beats ->
-                    FilterChip(
-                        selected = beatsPerBar == beats,
-                        onClick = { onSelect(beats) },
-                        label = { Text(beats.toString()) },
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AutoStopCard(state: MetronomeState, onSelect: (Int?) -> Unit) {
-    Surface(
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(R.string.metronome_auto_stop),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
-                )
-                state.remainingSeconds?.let { remaining ->
-                    Text(
-                        text = stringResource(
-                            R.string.metronome_time_left,
-                            remaining / 60,
-                            remaining % 60,
-                        ),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(
-                    selected = state.autoStopMinutes == null,
-                    onClick = { onSelect(null) },
-                    label = { Text(stringResource(R.string.metronome_auto_stop_off)) },
-                )
-                listOf(5, 10, 15).forEach { minutes ->
-                    FilterChip(
-                        selected = state.autoStopMinutes == minutes,
-                        onClick = { onSelect(minutes) },
-                        label = {
-                            Text(
-                                stringResource(R.string.metronome_minutes, minutes),
-                            )
-                        },
-                    )
-                }
             }
         }
     }
@@ -405,7 +336,7 @@ private fun HintCard(onOpenTempo: () -> Unit) {
                 )
             }
             TextButton(onClick = onOpenTempo) {
-                Text(stringResource(R.string.history_empty_action))
+                Text(stringResource(R.string.metronome_tap_hint_action))
             }
         }
     }

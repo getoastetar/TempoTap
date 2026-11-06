@@ -85,7 +85,6 @@ fun HistoryScreen(
                 ScreenHeader(
                     eyebrow = stringResource(R.string.history_eyebrow),
                     title = stringResource(R.string.history_title),
-                    subtitle = stringResource(R.string.history_subtitle),
                     trailing = if (sessions.isNotEmpty()) {
                         {
                             TextButton(onClick = { showClearDialog = true }) {

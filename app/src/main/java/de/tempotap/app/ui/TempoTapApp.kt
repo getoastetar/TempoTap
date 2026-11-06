@@ -37,7 +37,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import de.tempotap.app.AppContainer
 import de.tempotap.app.R
 import de.tempotap.app.audio.MetronomeState
 import de.tempotap.app.ui.about.AboutScreen
@@ -63,7 +62,6 @@ private enum class AppDestination(
 
 @Composable
 fun TempoTapApp(
-    container: AppContainer,
     settingsViewModel: SettingsViewModel,
 ) {
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
@@ -120,7 +118,6 @@ fun TempoTapApp(
                 ) {
                     composable(AppDestination.Tempo.route) {
                         TempoScreen(
-                            container = container,
                             settings = settings,
                             metronomeState = metronomeState,
                             onOpenMetronome = {

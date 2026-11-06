@@ -36,12 +36,15 @@ class SettingsRepository(context: Context) {
                 runCatching { ThemeMode.valueOf(value) }.getOrNull()
             } ?: ThemeMode.SYSTEM,
             dynamicColor = prefs[Keys.DYNAMIC_COLOR] ?: true,
+            amoledMode = prefs[Keys.AMOLED] ?: false,
             haptics = prefs[Keys.HAPTICS] ?: true,
-            tapSound = prefs[Keys.TAP_SOUND] ?: false,
             keepScreenOn = prefs[Keys.KEEP_SCREEN_ON] ?: false,
             resetTimeoutMs = prefs[Keys.RESET_TIMEOUT] ?: 2_500L,
             accentFirstBeat = prefs[Keys.ACCENT] ?: true,
             defaultBeatsPerBar = prefs[Keys.BEATS_PER_BAR] ?: 4,
+            metronomeSound = prefs[Keys.METRONOME_SOUND]?.let { value ->
+                runCatching { MetronomeSound.valueOf(value) }.getOrNull()
+            } ?: MetronomeSound.CLASSIC,
             language = language,
         )
     }
@@ -50,9 +53,9 @@ class SettingsRepository(context: Context) {
 
     suspend fun setDynamicColor(enabled: Boolean) = edit { it[Keys.DYNAMIC_COLOR] = enabled }
 
-    suspend fun setHaptics(enabled: Boolean) = edit { it[Keys.HAPTICS] = enabled }
+    suspend fun setAmoledMode(enabled: Boolean) = edit { it[Keys.AMOLED] = enabled }
 
-    suspend fun setTapSound(enabled: Boolean) = edit { it[Keys.TAP_SOUND] = enabled }
+    suspend fun setHaptics(enabled: Boolean) = edit { it[Keys.HAPTICS] = enabled }
 
     suspend fun setKeepScreenOn(enabled: Boolean) = edit { it[Keys.KEEP_SCREEN_ON] = enabled }
 
@@ -61,6 +64,8 @@ class SettingsRepository(context: Context) {
     suspend fun setAccentFirstBeat(enabled: Boolean) = edit { it[Keys.ACCENT] = enabled }
 
     suspend fun setDefaultBeatsPerBar(beats: Int) = edit { it[Keys.BEATS_PER_BAR] = beats }
+
+    suspend fun setMetronomeSound(sound: MetronomeSound) = edit { it[Keys.METRONOME_SOUND] = sound.name }
 
     fun setLanguage(language: AppLanguage) {
         AppLocale.write(appContext, language)
@@ -74,11 +79,12 @@ class SettingsRepository(context: Context) {
     private object Keys {
         val THEME = stringPreferencesKey("theme_mode")
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
+        val AMOLED = booleanPreferencesKey("amoled_mode")
         val HAPTICS = booleanPreferencesKey("haptics")
-        val TAP_SOUND = booleanPreferencesKey("tap_sound")
         val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
         val RESET_TIMEOUT = longPreferencesKey("reset_timeout")
         val ACCENT = booleanPreferencesKey("accent_first_beat")
         val BEATS_PER_BAR = intPreferencesKey("beats_per_bar")
+        val METRONOME_SOUND = stringPreferencesKey("metronome_sound")
     }
 }

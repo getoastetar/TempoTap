@@ -21,6 +21,7 @@ class MetronomeViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             container.settingsRepository.settings.collect { settings ->
                 controller.setAccentFirstBeat(settings.accentFirstBeat)
+                controller.setSound(settings.metronomeSound)
                 if (settings.defaultBeatsPerBar != lastDefaultBeats) {
                     lastDefaultBeats = settings.defaultBeatsPerBar
                     if (!controller.state.value.isPlaying) {
@@ -40,10 +41,6 @@ class MetronomeViewModel(application: Application) : AndroidViewModel(applicatio
     fun setBpm(bpm: Int) = controller.setBpm(bpm)
 
     fun adjustBpm(delta: Int) = controller.adjustBpm(delta)
-
-    fun setBeatsPerBar(beats: Int) = controller.setBeatsPerBar(beats)
-
-    fun setAutoStop(minutes: Int?) = controller.setAutoStop(minutes)
 
     fun startWithBpm(bpm: Int) {
         controller.setBpm(bpm)

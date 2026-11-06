@@ -49,6 +49,7 @@ import de.tempotap.app.BuildConfig
 import de.tempotap.app.R
 import de.tempotap.app.data.AppLanguage
 import de.tempotap.app.data.AppSettings
+import de.tempotap.app.data.MetronomeSound
 import de.tempotap.app.data.ThemeMode
 import de.tempotap.app.ui.components.IconBadge
 import de.tempotap.app.ui.components.ScreenHeader
@@ -101,6 +102,13 @@ fun SettingsScreen(
                         onCheckedChange = viewModel::setDynamicColor,
                         enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
                     )
+                    SettingsDivider()
+                    SettingsSwitchRow(
+                        title = stringResource(R.string.settings_amoled),
+                        description = stringResource(R.string.settings_amoled_desc),
+                        checked = settings.amoledMode,
+                        onCheckedChange = viewModel::setAmoledMode,
+                    )
                 }
             }
 
@@ -128,13 +136,6 @@ fun SettingsScreen(
                     )
                     SettingsDivider()
                     SettingsSwitchRow(
-                        title = stringResource(R.string.settings_tap_sound),
-                        description = stringResource(R.string.settings_tap_sound_desc),
-                        checked = settings.tapSound,
-                        onCheckedChange = viewModel::setTapSound,
-                    )
-                    SettingsDivider()
-                    SettingsSwitchRow(
                         title = stringResource(R.string.settings_keep_awake),
                         description = stringResource(R.string.settings_keep_awake_desc),
                         checked = settings.keepScreenOn,
@@ -151,6 +152,11 @@ fun SettingsScreen(
             item { SectionTitle(stringResource(R.string.settings_metronome)) }
             item {
                 SettingsCard {
+                    MetronomeSoundRow(
+                        selected = settings.metronomeSound,
+                        onSelect = viewModel::setMetronomeSound,
+                    )
+                    SettingsDivider()
                     SettingsSwitchRow(
                         title = stringResource(R.string.settings_accent),
                         description = stringResource(R.string.settings_accent_desc),
@@ -290,6 +296,42 @@ private fun ThemeRow(selected: ThemeMode, onSelect: (ThemeMode) -> Unit) {
                                     ThemeMode.SYSTEM -> R.string.settings_theme_system
                                     ThemeMode.LIGHT -> R.string.settings_theme_light
                                     ThemeMode.DARK -> R.string.settings_theme_dark
+                                },
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MetronomeSoundRow(selected: MetronomeSound, onSelect: (MetronomeSound) -> Unit) {
+    Column(modifier = Modifier.padding(20.dp)) {
+        Text(
+            text = stringResource(R.string.settings_metronome_sound),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = stringResource(R.string.settings_metronome_sound_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            MetronomeSound.entries.forEach { sound ->
+                FilterChip(
+                    selected = selected == sound,
+                    onClick = { onSelect(sound) },
+                    label = {
+                        Text(
+                            stringResource(
+                                when (sound) {
+                                    MetronomeSound.CLASSIC -> R.string.settings_sound_classic
+                                    MetronomeSound.ANALOG -> R.string.settings_sound_analog
+                                    MetronomeSound.DIGITAL -> R.string.settings_sound_digital
                                 },
                             ),
                         )

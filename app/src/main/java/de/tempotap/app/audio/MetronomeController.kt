@@ -1,6 +1,7 @@
 package de.tempotap.app.audio
 
 import android.os.SystemClock
+import de.tempotap.app.data.MetronomeSound
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,8 +19,6 @@ data class MetronomeState(
     val beatsPerBar: Int = 4,
     val isPlaying: Boolean = false,
     val currentBeat: Int = -1,
-    val autoStopMinutes: Int? = null,
-    val remainingSeconds: Int? = null,
 )
 
 /**
@@ -34,13 +33,21 @@ class MetronomeController {
     val state: StateFlow<MetronomeState> = _state.asStateFlow()
 
     private var tickerJob: Job? = null
-    private var autoStopJob: Job? = null
 
     @Volatile
     private var accentFirstBeat = true
 
+    @Volatile
+    private var sound = MetronomeSound.CLASSIC
+
     fun setAccentFirstBeat(enabled: Boolean) {
         accentFirstBeat = enabled
+    }
+
+    fun setSound(sound: MetronomeSound) {
+        if (this.sound == sound) return
+        this.sound = sound
+        if (_state.value.isPlaying) restart()
     }
 
     fun setBpm(bpm: Int) {
@@ -66,43 +73,22 @@ class MetronomeController {
     fun start() {
         val snapshot = _state.value
         if (snapshot.isPlaying) return
-        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat)
-        _state.update {
-            it.copy(
-                isPlaying = true,
-                currentBeat = 0,
-                remainingSeconds = it.autoStopMinutes?.times(60),
-            )
-        }
+        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat, sound)
+        _state.update { it.copy(isPlaying = true, currentBeat = 0) }
         startTicker()
-        startAutoStop()
     }
 
     fun stop() {
         tickerJob?.cancel()
         tickerJob = null
-        autoStopJob?.cancel()
-        autoStopJob = null
         engine.stop()
-        _state.update {
-            it.copy(isPlaying = false, currentBeat = -1, remainingSeconds = null)
-        }
-    }
-
-    fun setAutoStop(minutes: Int?) {
-        _state.update {
-            it.copy(
-                autoStopMinutes = minutes,
-                remainingSeconds = if (minutes != null && it.isPlaying) minutes * 60 else null,
-            )
-        }
-        if (_state.value.isPlaying) startAutoStop() else autoStopJob?.cancel()
+        _state.update { it.copy(isPlaying = false, currentBeat = -1) }
     }
 
     private fun restart() {
         val snapshot = _state.value
         engine.stop()
-        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat)
+        engine.start(snapshot.bpm, snapshot.beatsPerBar, accentFirstBeat, sound)
         _state.update { it.copy(currentBeat = 0) }
         startTicker()
     }
@@ -120,22 +106,6 @@ class MetronomeController {
                 nextBeat += (60_000_000_000.0 / bpm).toLong()
                 val delayMs = (nextBeat - SystemClock.elapsedRealtimeNanos()) / 1_000_000L
                 if (delayMs > 0) delay(delayMs) else Thread.yield()
-            }
-        }
-    }
-
-    private fun startAutoStop() {
-        autoStopJob?.cancel()
-        val minutes = _state.value.autoStopMinutes ?: return
-        autoStopJob = scope.launch {
-            var remaining = minutes * 60
-            while (remaining > 0 && isActive) {
-                _state.update { it.copy(remainingSeconds = remaining) }
-                delay(1_000)
-                remaining--
-            }
-            if (isActive && _state.value.isPlaying) {
-                stop()
             }
         }
     }

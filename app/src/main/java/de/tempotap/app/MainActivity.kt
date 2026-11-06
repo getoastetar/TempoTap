@@ -56,9 +56,9 @@ class MainActivity : ComponentActivity() {
             TempoTapTheme(
                 themeMode = settings.themeMode,
                 dynamicColor = settings.dynamicColor,
+                amoledMode = settings.amoledMode,
             ) {
                 TempoTapApp(
-                    container = (application as TempoTapApplication).container,
                     settingsViewModel = settingsViewModel,
                 )
             }

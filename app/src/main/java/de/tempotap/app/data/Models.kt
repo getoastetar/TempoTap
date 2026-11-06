@@ -18,6 +18,12 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class MetronomeSound {
+    CLASSIC,
+    ANALOG,
+    DIGITAL,
+}
+
 enum class AppLanguage(val languageTag: String) {
     GERMAN("de"),
     ENGLISH("en");
@@ -34,11 +40,12 @@ enum class AppLanguage(val languageTag: String) {
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val dynamicColor: Boolean = true,
+    val amoledMode: Boolean = false,
     val haptics: Boolean = true,
-    val tapSound: Boolean = false,
     val keepScreenOn: Boolean = false,
     val resetTimeoutMs: Long = 2_500L,
     val accentFirstBeat: Boolean = true,
     val defaultBeatsPerBar: Int = 4,
+    val metronomeSound: MetronomeSound = MetronomeSound.CLASSIC,
     val language: AppLanguage = AppLanguage.systemDefault(),
 )

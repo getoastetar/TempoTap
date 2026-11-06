@@ -30,7 +30,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +51,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -65,13 +63,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import de.tempotap.app.AppContainer
 import de.tempotap.app.R
 import de.tempotap.app.audio.MetronomeState
 import de.tempotap.app.data.AppSettings
 import de.tempotap.app.tempo.Stability
 import de.tempotap.app.ui.components.IconBadge
-import de.tempotap.app.ui.components.ScreenHeader
 import de.tempotap.app.ui.components.StatTile
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -79,7 +75,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TempoScreen(
-    container: AppContainer,
     settings: AppSettings,
     metronomeState: MetronomeState,
     onOpenMetronome: () -> Unit,
@@ -94,7 +89,6 @@ fun TempoScreen(
         if (settings.haptics) {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         }
-        container.clickPlayer.playTap(settings.tapSound)
     }
 
     BoxWithConstraints(
@@ -110,6 +104,8 @@ fun TempoScreen(
             ),
     ) {
         val wide = maxWidth >= 780.dp && maxHeight >= 520.dp
+        val savedHintHeight = if (state.saved) 40.dp else 0.dp
+        val compactTapHeight = (maxHeight - 220.dp - savedHintHeight).coerceAtLeast(260.dp)
         if (wide) {
             Row(
                 modifier = Modifier
@@ -118,12 +114,6 @@ fun TempoScreen(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 Column(modifier = Modifier.weight(1.15f).fillMaxHeight()) {
-                    ScreenHeader(
-                        eyebrow = stringResource(R.string.tempo_eyebrow),
-                        title = stringResource(R.string.tempo_title),
-                        subtitle = stringResource(R.string.tempo_subtitle),
-                    )
-                    Spacer(Modifier.height(20.dp))
                     TapHero(
                         state = state,
                         onTap = onTap,
@@ -138,8 +128,9 @@ fun TempoScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     StatsRow(state)
-                    SavedHint(state.saved)
-                    ResetButton(state, onReset = viewModel::reset)
+                    if (state.saved) {
+                        SavedHint(saved = true)
+                    }
                     MetronomeCard(
                         state = state,
                         metronomeState = metronomeState,
@@ -158,19 +149,15 @@ fun TempoScreen(
                     .padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                ScreenHeader(
-                    eyebrow = stringResource(R.string.tempo_eyebrow),
-                    title = stringResource(R.string.tempo_title),
-                    subtitle = stringResource(R.string.tempo_subtitle),
-                )
                 TapHero(
                     state = state,
                     onTap = onTap,
-                    modifier = Modifier.fillMaxWidth().height(392.dp),
+                    modifier = Modifier.fillMaxWidth().height(compactTapHeight),
                 )
                 StatsRow(state)
-                SavedHint(state.saved)
-                ResetButton(state, onReset = viewModel::reset)
+                if (state.saved) {
+                    SavedHint(saved = true)
+                }
                 MetronomeCard(
                     state = state,
                     metronomeState = metronomeState,
@@ -211,8 +198,7 @@ private fun TapHero(
 
     val statusText = when {
         state.bpm == null -> stringResource(R.string.tempo_idle_hint)
-        state.stability == Stability.HIGH -> stringResource(R.string.tempo_stable_hint)
-        else -> stringResource(R.string.tempo_continue_hint)
+        else -> stringResource(R.string.tempo_stable_hint)
     }
     val stabilityLabel = when (state.stability) {
         Stability.NONE -> stringResource(R.string.tempo_stability_none)
@@ -222,7 +208,7 @@ private fun TapHero(
     }
     val accessibilityDescription = stringResource(R.string.a11y_tap_pad) + ". " +
         stringResource(R.string.a11y_bpm, bpmValue)
-    val tapLabel = stringResource(R.string.tempo_tap_hint)
+    val tapLabel = stringResource(R.string.tempo_tap_action)
 
     Box(
         modifier = modifier
@@ -331,7 +317,7 @@ private fun TapHero(
                 style = MaterialTheme.typography.labelMedium,
                 color = colors.onPrimary.copy(alpha = 0.7f),
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
             Surface(
                 shape = CircleShape,
                 color = colors.onPrimary.copy(alpha = 0.14f),
@@ -346,31 +332,21 @@ private fun TapHero(
                     )
                 }
             }
-            Spacer(Modifier.height(10.dp))
-            Text(
-                text = stringResource(R.string.tempo_tap_hint),
-                style = MaterialTheme.typography.labelLarge,
-                color = colors.onPrimary.copy(alpha = 0.92f),
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = pluralStringResource(
-                    R.plurals.tap_count,
-                    state.tapCount,
-                    state.tapCount,
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = colors.onPrimary.copy(alpha = 0.72f),
-            )
         }
     }
 }
 
 @Composable
 private fun StatsRow(state: TempoUiState) {
-    val interval = state.lastIntervalMs?.let {
-        stringResource(R.string.value_ms, it.roundToInt())
+    val interval = state.lastIntervalMs?.let { millis ->
+        if (millis < 1_000.0) {
+            stringResource(R.string.value_ms, millis.roundToInt())
+        } else {
+            stringResource(
+                R.string.value_seconds,
+                String.format(Locale.getDefault(), "%.2f", millis / 1_000.0),
+            )
+        }
     } ?: stringResource(R.string.value_none)
     val variation = state.variationPercent?.let {
         stringResource(
@@ -426,23 +402,6 @@ private fun SavedHint(saved: Boolean) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-    }
-}
-
-@Composable
-private fun ResetButton(state: TempoUiState, onReset: () -> Unit) {
-    FilledTonalButton(
-        onClick = onReset,
-        enabled = state.tapCount > 0,
-        modifier = Modifier.fillMaxWidth().height(52.dp),
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_refresh),
-            contentDescription = null,
-            modifier = Modifier.size(19.dp),
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(stringResource(R.string.tempo_new_measurement))
     }
 }
 

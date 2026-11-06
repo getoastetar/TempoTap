@@ -16,18 +16,15 @@
     <string name="action_open">Open</string>
     <string name="value_none">–</string>
     <string name="value_ms">%1$d ms</string>
+    <string name="value_seconds">%1$s s</string>
     <string name="value_variation">±%1$s %%</string>
     <string name="session_saved">Session saved</string>
 
     <!-- Tempo -->
-    <string name="tempo_eyebrow">TEMPO</string>
-    <string name="tempo_title">Tap the beat</string>
-    <string name="tempo_subtitle">Tap along to the rhythm. TempoTap measures the gaps between your taps.</string>
     <string name="bpm_unit">BPM</string>
     <string name="tempo_idle_hint">Tap at least twice</string>
-    <string name="tempo_continue_hint">Keep tapping for a steadier result</string>
     <string name="tempo_stable_hint">Tempo detected</string>
-    <string name="tempo_tap_hint">Tap here to the rhythm</string>
+    <string name="tempo_tap_action">Tap</string>
     <string name="tempo_stat_interval">Interval</string>
     <string name="tempo_stat_taps">Taps</string>
     <string name="tempo_stat_variation">Spread</string>
@@ -35,7 +32,6 @@
     <string name="tempo_stability_low">Still uneven</string>
     <string name="tempo_stability_medium">Steady</string>
     <string name="tempo_stability_high">Very steady</string>
-    <string name="tempo_new_measurement">New measurement</string>
     <string name="tempo_metronome_title">Metronome</string>
     <string name="tempo_metronome_with_bpm">Practice at %1$d BPM</string>
     <string name="tempo_metronome_running">Running at %1$d BPM</string>
@@ -54,9 +50,6 @@
     </plurals>
 
     <!-- Metronome -->
-    <string name="metronome_eyebrow">METRONOME</string>
-    <string name="metronome_title">Stay on the beat</string>
-    <string name="metronome_subtitle">Sample-accurate click with an accent on the first beat.</string>
     <string name="metronome_start">Start</string>
     <string name="metronome_stop">Stop</string>
     <string name="metronome_tempo">Tempo</string>
@@ -64,19 +57,14 @@
     <string name="metronome_decrease">Decrease tempo</string>
     <string name="metronome_increase">Increase tempo</string>
     <string name="metronome_presets">Quick pick</string>
-    <string name="metronome_beats">Beats per bar</string>
-    <string name="metronome_auto_stop">Auto stop</string>
-    <string name="metronome_auto_stop_off">Off</string>
-    <string name="metronome_minutes">%1$d min</string>
-    <string name="metronome_time_left">%1$d:%2$02d left</string>
     <string name="metronome_tap_hint">Tip: tap your tempo on the Tempo screen and send it straight to the metronome.</string>
+    <string name="metronome_tap_hint_action">Tap tempo</string>
     <string name="metronome_beat_indicator">Beat %1$d of %2$d</string>
     <string name="a11y_metronome_toggle">Metronome %1$s</string>
 
     <!-- History -->
     <string name="history_eyebrow">HISTORY</string>
     <string name="history_title">Your tempos</string>
-    <string name="history_subtitle">Stored locally. On this device only.</string>
     <string name="history_sessions">Sessions</string>
     <string name="history_average">Avg. tempo</string>
     <string name="history_fastest">Fastest</string>
@@ -109,6 +97,8 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_dynamic">Material You</string>
     <string name="settings_dynamic_desc">Use colors from your wallpaper (Android 12+)</string>
+    <string name="settings_amoled">AMOLED black</string>
+    <string name="settings_amoled_desc">True black in dark mode</string>
     <string name="settings_language_section">Language</string>
     <string name="settings_language">App language</string>
     <string name="settings_language_desc">Applies immediately across the whole app.</string>
@@ -117,13 +107,16 @@
     <string name="settings_behavior">Behavior</string>
     <string name="settings_haptics">Haptic feedback</string>
     <string name="settings_haptics_desc">A short vibration on every tap</string>
-    <string name="settings_tap_sound">Tap sound</string>
-    <string name="settings_tap_sound_desc">A quiet click while tapping</string>
     <string name="settings_keep_awake">Keep screen awake</string>
     <string name="settings_keep_awake_desc">Handy when practicing with the metronome</string>
     <string name="settings_reset_timeout">Pause before a new measurement</string>
     <string name="settings_reset_timeout_value">%1$s s</string>
     <string name="settings_metronome">Metronome</string>
+    <string name="settings_metronome_sound">Sound</string>
+    <string name="settings_metronome_sound_desc">Three synthetic sounds inspired by classic, analog and digital metronomes</string>
+    <string name="settings_sound_classic">Classic</string>
+    <string name="settings_sound_analog">Analog</string>
+    <string name="settings_sound_digital">Digital</string>
     <string name="settings_accent">Accent on the first beat</string>
     <string name="settings_accent_desc">The first beat of a bar sounds higher</string>
     <string name="settings_default_beats">Default time signature</string>
@@ -137,7 +130,7 @@
 
     <!-- About -->
     <string name="about_title">About TempoTap</string>
-    <string name="about_lead">A fast, precise BPM tapper for musicians, DJs, dancers and anyone who wants to measure a pulse.</string>
+    <string name="about_lead">A fast, precise BPM tapper for musicians, DJs, dancers and everyone who is antifascist.</string>
     <string name="about_features_title">Features</string>
     <string name="about_feature_1">Tap tempo with outlier filtering and a stability indicator</string>
     <string name="about_feature_2">Metronome with sample-accurate clicks and accents</string>
